@@ -1,0 +1,30 @@
+# Archivos y carpetas de Ruby generados automáticamente
+*.gem
+*.rbc
+/.bundle
+/vendor/bundle
+
+# Bloqueo de Gems (generalmente se incluye, pero algunos lo ignoran)
+Gemfile.lock
+
+# Reportes de pruebas (si usas RSpec/Allure, etc.)
+/reports/
+/log/
+
+# Archivos de depuración y logs
+*.log
+*.sqlite3
+/tmp
+/cache
+
+# Archivos específicos de entornos
+.env
+.DS_Store
+
+# Archivos de Appium/Android
+# Appium genera logs y a veces guarda configuraciones temporales
+appium-server-logs.txt
+/appium-logs/
+
+# Carpeta de capturas de pantalla de fallos (Si las implementas)
+/screenshots/
