@@ -5,28 +5,21 @@ require_relative 'base_page'
 module Pages
   class ResultsPage < BasePage
     
-    # --- SELECTORES ALTERNATIVOS (¡AJUSTADOS SEGÚN TUS HALLAZGOS!) ---
-    
-    # 1. Botón de Filtros (No tiene ID, es un LinearLayout)
-    # Estrategia: Buscar el elemento por su clase y, si tiene un texto o content-desc, usarlo.
-    # Si es solo un LinearLayout, debemos buscar un elemento hijo que sí tenga algo único (icono, texto)
-    # o usar un XPath absoluto/indexado si es el primer/único botón en esa barra.
-    # Aquí asumimos que tiene una descripción o se puede encontrar por el texto 'Filtrar'.
+    # Selectores principales
     FILTER_BUTTON_XPATH = "//android.widget.TextView[contains(@text,'Filtros')]"
     
-    # 2. Botón de Ordenar (No está en la página principal, se encuentra DENTRO del menú de Filtros)
+    # Botón de Ordenar dentro del modal de Filtros
     SORT_BUTTON_XPATH = "//android.widget.TextView[@text='Ordenar por']" 
     
     MODAL_TITLE_ID = "//android.widget.ListView[@resource-id='selectable']" 
 
-    # 3. Datos del Producto
+    # Datos del producto
     ITEM_CONTAINER_XPATH = "//android.view.View[@resource-id='polycard_component']" # Asumimos que el contenedor SÍ tiene ID
     
-    # Título (No tiene ID)
-    # Estrategia: Buscar el primer TextView (o una clase similar) DENTRO del contenedor del producto.
+    # Título (primer TextView dentro del contenedor)
     ITEM_TITLE_XPATH = ".//android.widget.TextView[1]" 
     
-    # Precio (Sí tiene resource-id)
+    # Precio (resource-id)
     ITEM_PRICE_XPATH = './/android.widget.TextView[@resource-id="current amount"]'
     
     # -----------------------------------------------
@@ -34,7 +27,7 @@ module Pages
     def apply_filters_and_sort
       puts "Paso 3, 4 y 5: Aplicando filtros y ordenación..."
       
-      # 1. Abrir filtros usando la nueva XPath
+      # Abrir filtros
       find_and_wait(:xpath, FILTER_BUTTON_XPATH).click
 
       sleep 2
@@ -57,12 +50,12 @@ module Pages
         puts " -> No se detectaron hijos."
       end
 
-      # 2. Aplicar Condición "Nuevos" (Paso 3)
+      # Condición "Nuevo"
       puts "  -> Aplicando filtro: Condición 'Nuevo'"
       # Nota: Usamos XPath para categorías y opciones de filtro (el texto debe ser exacto)
       apply_specific_filter("selectable-4", "Nuevo")
 
-      # 3. Aplicar Ubicación "CDMX" (Paso 4)
+      # Envío "Local"
       puts "  -> Aplicando filtro: Envio 'Local'"
       apply_specific_filter("selectable-9", "Local") 
 
@@ -73,45 +66,38 @@ module Pages
 
       sleep 2
 
-      # 4. Ordenar por "Mayor a menor precio" (Paso 5)
+      # Ordenar por "Mayor precio"
       puts " -> Aplicando filtro: Ordenar por 'Mayor precio'"
       apply_specific_filter("selectable-21", "Mayor precio") 
       
-      # Volver a la pantalla de resultados (presionamos "Ver resultados" si existe)
+      # Volver a resultados ("Ver resultados" si existe)
       sleep 1
       find_and_wait(:xpath, "//android.widget.Button[@resource-id=':r3:']").click # Ejemplo común
     end
     
     def apply_specific_filter(category_text, option_text)
-      # Encuentra la categoría (ej: Condición) y haz clic
+      # Click en categoría
       find_and_wait(:xpath, "//android.view.View[@resource-id='#{category_text}']").click
 
       sleep 0.5
       
-      # Encuentra la opción (ej: Nuevo) y haz clic
+      # Click en opción
       find_and_wait(:xpath, "//android.widget.ToggleButton[@text='#{option_text}']").click
     end
     
     def scroll_to_text_in_container(text, container_id = nil, direction = 'down')
         puts "  -> Realizando scroll hasta el texto: '#{text}' usando mobile:swipeGesture"
-        
-        # 1. Creamos el selector de destino (el elemento que queremos ver)
-        # Usamos XPath, que es la forma más compatible de buscar por texto.
+        # Objetivo por texto
         target_selector = "//android.view.View[contains(@content-desc, '#{text}')]"
-        
-        # 2. El comando mobile:scroll requiere un elemento (el contenedor) para saber dónde scrollar.
-        # Si se proporciona un ID, usamos ese contenedor; si no, buscamos el scrollable general.
+        # Contenedor scrollable por ID o genérico
         if container_id
           scrollable_element = find_and_wait(:xpath, "//android.widget.ListView[@resource-id='#{container_id}']") 
           puts " -> Scrollable encontrado con ID: #{container_id}"
         else
-          # Si no hay ID, buscamos el primer elemento scrollable disponible (clase RecyclerView, ListView, etc.)
           scrollable_element = find_and_wait(:xpath, "//*[contains(@class, 'view') and @scrollable='true']") # Selector genérico de contenedor scrollable
         end
 
-        # 1. Creamos el selector de destino (el elemento que queremos ver)
-        # Ya no necesitamos crear una XPath compleja, solo la búsqueda por texto.
-        # 4. Ejecutar gestos de swipe hasta encontrar el elemento o agotar intentos
+        # Swipes hasta encontrar el elemento o agotar intentos
         attempts = 8
         gesture_direction = case direction
                             when 'down' then 'up'   # Para desplazar el contenido hacia abajo, el gesto es hacia arriba
@@ -127,7 +113,7 @@ module Pages
               return
             end
           rescue Selenium::WebDriver::Error::NoSuchElementError
-            # Ignorar y realizar swipe
+            # Ignorar y hacer swipe
           end
 
           @driver.execute_script 'mobile: swipeGesture', {
@@ -138,7 +124,7 @@ module Pages
           sleep 0.3
         end
 
-        # Intento final de verificación
+        # Verificación final
         begin
           el = @driver.find_element(:xpath, target_selector)
           if el.displayed?
@@ -153,7 +139,7 @@ module Pages
         puts "  -> Scroll ejecutado. El elemento '#{text}' debería ser visible."
 
     rescue Selenium::WebDriver::Error::NoSuchElementError
-        # El elemento scrollable no fue encontrado o el texto final no apareció
+        # No se encontró contenedor o texto
         raise "Error: Falló al encontrar el contenedor scrollable o el texto '#{text}' no se hizo visible."
     rescue => e
         raise "Error al realizar scroll con 'mobile: swipeGesture': #{e.message}"
