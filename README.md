@@ -82,6 +82,10 @@ Automatización de búsqueda en Mercado Libre usando Appium + Ruby:
 - Si tu app muestra un Activity de arranque distinto, actualiza `appActivity` en `mercadolibre_test.rb` (por ejemplo `com.mercadolibre.splash.SplashActivity`) o exporta `APP_ACTIVITY` y ajusta el script para leerlo.
 - Para entornos lentos, incrementa tiempos de espera (`appWaitDuration`, esperas explícitas en el test).
 
+## Documentación completa
+
+Visita [Efren0406/mercadolibre-appium-test | DeepWiki](https://deepwiki.com/Efren0406/mercadolibre-appium-test)
+
 ## Demostración
 
 <p align="center">
