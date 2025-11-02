@@ -47,12 +47,7 @@ Automatización de búsqueda en Mercado Libre usando Appium + Ruby:
     - Arranca Appium en `127.0.0.1:4723` y espera readiness.
     - Ejecuta `mercadolibre_test.rb` con `bundle exec` si hay Gemfile.
 
-### Opción 2: Linux/macOS (bash)
-- Da permisos de ejecución: `chmod +x ./run_test_linux.sh`
-- Ejecuta: `./run_test_linux.sh`
-  - Inicia Appium y luego corre el test Ruby.
-
-### Opción 3: Manual (para diagnóstico)
+### Opción 2: Manual (para diagnóstico)
 - Terminal 1: `appium -a 127.0.0.1 -p 4723`
 - Terminal 2 (proyecto): `bundle exec ruby ./mercadolibre_test.rb`
 
@@ -70,7 +65,6 @@ Automatización de búsqueda en Mercado Libre usando Appium + Ruby:
 - `pages/home_page.rb`: selectores y flujo de búsqueda.
 - `pages/results_page.rb`: filtros, ordenamiento, y recolección de productos con swipe.
 - `run_test_windows.ps1`: levanta Appium y ejecuta el test en Windows.
-- `run_test_linux.sh`: idem para Linux/macOS.
 
 ## Troubleshooting
 - Appium no arranca desde PowerShell
@@ -84,29 +78,35 @@ Automatización de búsqueda en Mercado Libre usando Appium + Ruby:
   - Puede haber pantallas de onboarding/permisos. Concédelos o indica los textos/ids para automatizar el cierre.
   - Ajusta `ANDROID_DEVICE`/`ANDROID_AVD` según tu entorno.
 
-## Capturas y GIF de demostración
-- Crea la carpeta `assets/` en la raíz del proyecto (no incluida por defecto).
-- Coloca:
-  - GIF principal de la ejecución: `assets/demo.gif`
-  - Capturas opcionales:
-    - `assets/01_home.png` (pantalla de inicio con barra de búsqueda)
-    - `assets/02_results.png` (resultados con filtros aplicados)
-    - `assets/03_products.png` (lista mostrando al menos 5 productos)
-
-### Cómo referenciar en el README
-- GIF en la portada:
-  
-  `![Demo de ejecución](assets/demo.gif)`
-
-- Capturas en secciones:
-  
-  `![Home](assets/01_home.png)`
-  
-  `![Resultados](assets/02_results.png)`
-
 ## Notas
 - Si tu app muestra un Activity de arranque distinto, actualiza `appActivity` en `mercadolibre_test.rb` (por ejemplo `com.mercadolibre.splash.SplashActivity`) o exporta `APP_ACTIVITY` y ajusta el script para leerlo.
 - Para entornos lentos, incrementa tiempos de espera (`appWaitDuration`, esperas explícitas en el test).
+
+## Demostración
+
+<p align="center">
+  <img src="assets/demo.gif" alt="Demo de ejecución" width="350" />
+</p>
+
+### Capturas
+
+<div align="center">
+<table>
+<tr>
+    <td align="center">
+    <img src="assets/01_home.png" alt="Home" width="350" />
+    </td>
+    <td align="center">
+    <img src="assets/02_results.png" alt="Resultados" width="350" />
+    </td>
+</tr>
+<tr>
+    <td align="center"><em>Home</em></td>
+    <td align="center"><em>Resultados</em></td>
+</tr>
+
+</table>
+</div>
 
 ## Salida de ejemplo (terminal)
 
